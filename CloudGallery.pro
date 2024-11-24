@@ -10,6 +10,9 @@ CONFIG += c++17
 
 SOURCES += \
     cachemanager.cpp \
+    directory.cpp \
+    file.cpp \
+    filesystem.cpp \
     main.cpp \
     mainwindow.cpp \
     memorymanager.cpp \
@@ -20,6 +23,9 @@ SOURCES += \
 
 HEADERS += \
     cachemanager.h \
+    directory.h \
+    file.h \
+    filesystem.h \
     mainwindow.h \
     memorymanager.h \
     page.h \

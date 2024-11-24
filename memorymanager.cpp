@@ -9,10 +9,11 @@
 MemoryManager::MemoryManager(size_t cacheCapacity, const QString& storageDir)
     : cacheManager(cacheCapacity), storageDirectory(storageDir) {
     initializeStorageDirectory();
+    fileSystem = new FileSystem();
 }
 
 MemoryManager::~MemoryManager() {
-
+    delete fileSystem;
 }
 
 void MemoryManager::initializeStorageDirectory() {
@@ -24,8 +25,9 @@ void MemoryManager::initializeStorageDirectory() {
     }
 }
 
-uint32_t MemoryManager::getVirtualPageForImage(const QString& filePath) {
+uint32_t MemoryManager::getVirtualPageForImage(const QString& filePath) const {
     // Генерация уникального номера виртуальной страницы для изображения
+    // Можно использовать хэш файла или иную стратегию
     return std::hash<QString>{}(filePath) % 100000;
 }
 
@@ -53,7 +55,7 @@ bool MemoryManager::readPageFromDisk(uint32_t virtualPage, Page* page) {
         return false;
     }
 
-    // Приведение типов к size_t потому что оно срань не работает с uint
+    // Приведение типов к size_t
     size_t bytesToCopy = std::min(static_cast<size_t>(data.size()), page->getSize());
 
     std::memcpy(page->getData(), data.constData(), bytesToCopy);
@@ -135,6 +137,7 @@ void MemoryManager::unloadPage(uint32_t virtualPage, uint32_t segmentId) {
 
     // Удалить страницу из таблицы страниц и кэша
     pageTable.unmapPage(virtualPage);
+    // Предполагается, что CacheManager автоматически удаляет страницу из кэша при удалении из PageTable
 
     // Удалить страницу из сегмента
     Segment* segment = segmentManager.getSegment(segmentId);
@@ -146,9 +149,9 @@ void MemoryManager::unloadPage(uint32_t virtualPage, uint32_t segmentId) {
     delete page;
 }
 
-QImage MemoryManager::loadImage(const QString& filePath, uint32_t segmentId) {
+QImage MemoryManager::loadImage(const QString& filePath, const QString& directoryPath) {
     uint32_t virtualPageNumber = getVirtualPageForImage(filePath);
-    Page* page = loadPage(virtualPageNumber, segmentId);
+    Page* page = loadPage(virtualPageNumber, /*segmentId=*/1); // Можно использовать отдельный сегмент для изображений
 
     if (page) {
         // Чтение данных изображения из страницы
@@ -157,6 +160,10 @@ QImage MemoryManager::loadImage(const QString& filePath, uint32_t segmentId) {
         // Преобразование данных страницы в QImage
         QImage image(reinterpret_cast<const uchar*>(page->getData()), 512, 512, QImage::Format_RGB32);
         if (!image.isNull()) {
+            // Добавить файл в файловую систему
+            QString fileName = QFileInfo(filePath).fileName();
+            fileSystem->createFile(directoryPath, fileName, image);
+
             return image;
         } else {
             qWarning() << "Не удалось создать QImage из данных страницы.";
@@ -166,6 +173,15 @@ QImage MemoryManager::loadImage(const QString& filePath, uint32_t segmentId) {
     return QImage(); // Возвращает пустое изображение в случае ошибки
 }
 
-void MemoryManager::unloadImage(uint32_t virtualPage, uint32_t segmentId) {
-    unloadPage(virtualPage, segmentId);
+void MemoryManager::unloadImage(const QString& filePath, const QString& directoryPath) {
+    uint32_t virtualPageNumber = getVirtualPageForImage(filePath);
+    unloadPage(virtualPageNumber, /*segmentId=*/1); // Можно использовать отдельный сегмент для изображений
+
+    // Удалить файл из файловой системы
+    QString fileName = QFileInfo(filePath).fileName();
+    fileSystem->deleteFile(directoryPath, fileName);
+}
+
+FileSystem* MemoryManager::getFileSystem() const {
+    return fileSystem;
 }
