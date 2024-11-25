@@ -22,6 +22,9 @@ public:
     bool deleteFile(const QString& path, const QString& file_name);
     bool deleteDirectory(const QString& path);
 
+private:
+    Directory* root;
+    Directory* traversePath(const QString& path) const;
 };
 
 #endif // FILESYSTEM_H
