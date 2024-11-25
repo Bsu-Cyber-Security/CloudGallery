@@ -39,3 +39,24 @@ Directory* FileSystem::createDirectory(const QString& path){
     return current;
 }
 
+bool FileSystem::deleteDirectory(const QString& path){
+    if(path.isEmpty()){
+        return false;
+    }
+
+    QStringList parts = path.split('/', Qt::SkipEmptyParts);
+    QString dir_name = parts.last();
+    parts.removeLast();
+
+    Directory* parent = traversePath(parts.join('/'));
+
+    if(parent){
+        Directory* dir = parent->getSubDirectory(dir_name);
+        if(dir){
+            parent->removeSubDirectory(dir_name);
+            return true;
+        }
+    }
+
+    return false;
+}
