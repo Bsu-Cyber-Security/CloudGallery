@@ -12,6 +12,15 @@ Directory* FileSystem::getRootDirectory() const{
     return root;
 }
 
+Directory* FileSystem::getDirectory(const QString& path) const {
+    if(path.isEmpty()){
+        return root;
+    }
+
+    return traversePath(path);
+}
+
+
 Directory* FileSystem::createDirectory(const QString& path){
     QStringList parts = path.split('/', Qt::SkipEmptyParts);
     Directory* current = root;
@@ -29,3 +38,4 @@ Directory* FileSystem::createDirectory(const QString& path){
 
     return current;
 }
+
