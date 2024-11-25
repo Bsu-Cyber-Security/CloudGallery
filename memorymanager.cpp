@@ -27,8 +27,7 @@ void MemoryManager::initializeStorageDirectory() {
 
 uint32_t MemoryManager::getVirtualPageForImage(const QString& filePath) const {
     // Генерация уникального номера виртуальной страницы для изображения
-    // Можно использовать хэш файла или иную стратегию
-    return std::hash<QString>{}(filePath) % 100000;
+     return std::hash<QString>{}(filePath) % 100000;
 }
 
 bool MemoryManager::readPageFromDisk(uint32_t virtualPage, Page* page) {
