@@ -12,3 +12,20 @@ Directory* FileSystem::getRootDirectory() const{
     return root;
 }
 
+Directory* FileSystem::createDirectory(const QString& path){
+    QStringList parts = path.split('/', Qt::SkipEmptyParts);
+    Directory* current = root;
+
+    for(const QString part : parts){
+        Directory* next = current->getSubDirectory(part);
+
+        if(!next){
+            next = new Directory(part, current);
+            current->addSubDirectory(next);
+        }
+
+        current = next;
+    }
+
+    return current;
+}
