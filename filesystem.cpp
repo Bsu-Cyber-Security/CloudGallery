@@ -60,3 +60,16 @@ bool FileSystem::deleteDirectory(const QString& path){
 
     return false;
 }
+
+File* FileSystem::createFile(const QString& path, const QString& file_name, const QImage& image){
+    Directory* dir = getDirectory(path);
+
+    if(dir){
+        File* file = new File(file_name, dir->getPath() + "/" + file_name);
+        file->setImage(image);
+        dir->addFile(file);
+        return file;
+    }
+
+    return nullptr;
+}
