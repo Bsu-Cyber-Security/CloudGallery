@@ -98,6 +98,5 @@ bool FileSystem::deleteFile(const QString& path, const QString& file_name){
         dir->removeFile(file_name);
         return true;
     }
-
     return false;
 }

@@ -19,6 +19,7 @@ SOURCES += \
     mainwindow.cpp \
     memorymanager.cpp \
     message.cpp \
+    messageclient.cpp \
     page.cpp \
     pagetable.cpp \
     segment.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     mainwindow.h \
     memorymanager.h \
     message.h \
+    messageclient.h \
     page.h \
     pagetable.h \
     segment.h \
