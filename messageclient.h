@@ -30,8 +30,8 @@ private slots:
     void onTextMessageReceived(const QString& message);
     void onReadOnly();
     void onReadyRead();
-    void onErrorOccured();
-    void onError(QAbstractSocket::SocketError error);
+    void onErrorOccured(QAbstractSocket::SocketError error);
+    void onError();
 
 private:
     QTcpSocket* tcpSocket;

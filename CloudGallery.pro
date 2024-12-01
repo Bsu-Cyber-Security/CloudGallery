@@ -15,6 +15,8 @@ SOURCES += \
     directory.cpp \
     file.cpp \
     filesystem.cpp \
+    filetransfermanager.cpp \
+    foldertransfermanager.cpp \
     main.cpp \
     mainwindow.cpp \
     memorymanager.cpp \
@@ -31,6 +33,8 @@ HEADERS += \
     directory.h \
     file.h \
     filesystem.h \
+    filetransfermanager.h \
+    foldertransfermanager.h \
     mainwindow.h \
     memorymanager.h \
     message.h \
