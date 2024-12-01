@@ -2,39 +2,38 @@
 #define AUTHENTIFICATIONMANAGER_H
 
 #include <QString>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QTimer>
+#include <QTcpSocket>
 
-class AuthentificationManager : public QObject
-{
+class AuthentificationManager : public QObject {
     Q_OBJECT
 public:
-    explicit AuthentificationManager(QObject* parent = nullptr);
+    explicit AuthentificationManager(QTcpSocket* socket, QObject* parent = nullptr);
     ~AuthentificationManager();
 
-    void login(const QString& username, const QString& password);
-    void logout();
-    bool isAuthentificated();
+    void registerUser(const QString& username, const QString& password);
+    void loginUser(const QString& username, const QString& password);
+    bool isAuthenticated() const;
     QString getToken() const;
 
 signals:
+    void registrationSuccess();
+    void registrationFailed(const QString& reason);
     void loginSuccess();
     void loginFailed(const QString& reason);
-    void tokenExpired();
+    void errorOccurred(const QString& error);
 
 private slots:
-    void onLoginFinished(QNetworkReply* reply);
-    void onTokenRefreshTimeout();
+    void onReadyRead();
+    void onErrorOccurred(QAbstractSocket::SocketError socketError);
 
 private:
-    QNetworkAccessManager* networkManager;
+    QTcpSocket* tcpSocket;
+    bool authenticated;
     QString token;
-    QTimer* tokenRefreshTimer;
+    QByteArray buffer;
 
-    void refreshToken();
+    QString hashPassword(const QString& password) const;
+    void processResponse(const QJsonObject& response);
 };
 
 #endif // AUTHENTIFICATIONMANAGER_H
