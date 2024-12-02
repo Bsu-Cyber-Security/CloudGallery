@@ -12,6 +12,7 @@ CONFIG += c++17
 SOURCES += \
     authentificationmanager.cpp \
     cachemanager.cpp \
+    cloudgallerywindow.cpp \
     directory.cpp \
     file.cpp \
     filesystem.cpp \
@@ -23,11 +24,15 @@ SOURCES += \
     page.cpp \
     pagetable.cpp \
     segment.cpp \
-    segmentmanager.cpp
+    segmentmanager.cpp \
+    signinwindow.cpp \
+    signupwindow.cpp \
+    welcomepage.cpp
 
 HEADERS += \
     authentificationmanager.h \
     cachemanager.h \
+    cloudgallerywindow.h \
     directory.h \
     file.h \
     filesystem.h \
@@ -38,10 +43,17 @@ HEADERS += \
     page.h \
     pagetable.h \
     segment.h \
-    segmentmanager.h
+    segmentmanager.h \
+    signinwindow.h \
+    signupwindow.h \
+    welcomepage.h
 
 FORMS += \
-    mainwindow.ui
+    cloudgallerywindow.ui \
+    mainwindow.ui \
+    signinwindow.ui \
+    signupwindow.ui \
+    welcomepage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

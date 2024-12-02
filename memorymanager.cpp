@@ -26,7 +26,6 @@ void MemoryManager::initializeStorageDirectory() {
 }
 
 uint32_t MemoryManager::getVirtualPageForImage(const QString& filePath) const {
-    // Генерация уникального номера виртуальной страницы для изображения
      return std::hash<QString>{}(filePath) % 100000;
 }
 
@@ -136,7 +135,7 @@ void MemoryManager::unloadPage(uint32_t virtualPage, uint32_t segmentId) {
 
     // Удалить страницу из таблицы страниц и кэша
     pageTable.unmapPage(virtualPage);
-    // Предполагается, что CacheManager автоматически удаляет страницу из кэша при удалении из PageTable
+    // CacheManager автоматически удаляет страницу из кэша при удалении из PageTable
 
     // Удалить страницу из сегмента
     Segment* segment = segmentManager.getSegment(segmentId);
@@ -150,7 +149,7 @@ void MemoryManager::unloadPage(uint32_t virtualPage, uint32_t segmentId) {
 
 QImage MemoryManager::loadImage(const QString& filePath, const QString& directoryPath) {
     uint32_t virtualPageNumber = getVirtualPageForImage(filePath);
-    Page* page = loadPage(virtualPageNumber, /*segmentId=*/1); // Можно использовать отдельный сегмент для изображений
+    Page* page = loadPage(virtualPageNumber, /*segmentId=*/1);
 
     if (page) {
         // Чтение данных изображения из страницы
